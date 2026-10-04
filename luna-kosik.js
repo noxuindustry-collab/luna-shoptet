@@ -123,7 +123,7 @@ if(/^(email|phone|billCity|billZip|deliveryCity|deliveryZip)$/.test(inp.id))row.
 for(var q=inp.parentElement;q&&q!==row;q=q.parentElement)q.classList.add('li-fw');fl(row.parentElement);}
 [].forEach.call(ci.querySelectorAll('input[type="checkbox"]'),function(c){fl(c.parentElement);});
 [].forEach.call(ci.querySelectorAll('.form-control-wrapper--with-note'),function(w){var g=w.closest('.form-group');if(g){g.classList.add('li-row');if(g.parentElement)g.parentElement.classList.add('li-grid');fl(g.parentElement);}});
-var lg2=ci.querySelector('.login-button');if(lg2){var ac=lg2.closest('.form-group');if(ac){ac.classList.add('li-acc');fl(ac.parentElement);}}
+var lg2=ci.querySelector('.login-button');if(lg2){var ac=lg2.closest('.form-group');if(ac)ac.classList.add('lo-hide');}
 var rq=ci.querySelector('.form-legend');if(rq)rq.classList.add('lo-hide');
 top(hs,2,'Informace o vás','Kam vám pošleme potvrzení objednávky. Pole označená * jsou povinná.',r);
 heal(cb,hs);wb(col);return true;}
