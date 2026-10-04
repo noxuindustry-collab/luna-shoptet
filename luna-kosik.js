@@ -31,7 +31,6 @@ else if(!has.n&&c.querySelector('a[href]')&&s.trim())k='lc-n';
 else if(/\/\s*ks/.test(s))k='lc-pr';
 else if(/skladem|dostupn/i.test(s)||/availab/.test(c.className))k='lc-av';
 else if(/\d/.test(s)){k='lc-tot';tot.push(c);}
-else if(c.querySelector('button,form,[class*="remove"]'))k='lc-x';
 if(k){c.classList.add(k);has[k.charAt(3)]=1;}
 }
 if(tot.length>1)tot[0].classList.replace('lc-tot','lc-pr');
@@ -40,6 +39,7 @@ var qc=r.querySelector('.lc-q');
 if(qc){var w=qc.querySelector('.lc-qty');
 if(!w){w=document.createElement('div');w.className='lc-qty';w.innerHTML='<button type="button" class="lc-m" aria-label="Odebrat kus">−</button><span class="lc-v"></span><button type="button" class="lc-p" aria-label="Přidat kus">+</button>';qc.appendChild(w);}
 var vv=String(+q[i].value||0),vs=w.querySelector('.lc-v');if(vs.textContent!==vv)vs.textContent=vv;}
+if(!r.querySelector('.lc-xo')){var xo=document.createElement('td');xo.className='lc-x lc-xo';xo.innerHTML='<button type="button" class="lc-del" aria-label="Odebrat z košíku" title="Odebrat z košíku"></button>';r.appendChild(xo);}
 var tc=r.querySelector('.lc-tot:not(.lc-own)'),own=r.querySelector('.lc-own'),pr=r.querySelector('.lc-pr');
 if((!tc||!tc.offsetParent||!/\d/.test(tc.textContent))&&pr){
 if(!own){own=document.createElement('td');own.className='lc-tot lc-own';r.appendChild(own);}
@@ -108,6 +108,15 @@ var b=ev.target.closest&&ev.target.closest('.lc-m,.lc-p');if(!b)return;ev.preven
 var cell=b.closest('.lc-q'),up1=b.classList.contains('lc-p'),inp=cell.querySelector('input[name="amount"]'),nat=cell.querySelector((up1?'.increase':'.decrease')+':not([class*="tooltip"])');
 if(nat)nat.click();else if(inp){inp.value=Math.max(1,(+inp.value||1)+(up1?1:-1));inp.dispatchEvent(new Event('input',{bubbles:true}));inp.dispatchEvent(new Event('change',{bubbles:true}));}
 setTimeout(function(){var vs=cell.querySelector('.lc-v');if(vs&&inp)vs.textContent=String(+inp.value||0);sch();},60);
+});
+document.addEventListener('click',function(ev){
+var b=ev.target.closest&&ev.target.closest('.lc-del');if(!b)return;ev.preventDefault();
+var r=b.closest('tr'),nat=null,cs=r.querySelectorAll('[class*="remove"],[data-testid*="emove"],[data-testid*="elete"],form[action*="elete"] [type="submit"],form[action*="emove"] [type="submit"],a[href*="elete"],a[href*="emove"],[title*="Odstranit"],[title*="Smazat"],[aria-label*="Odstranit"]');
+for(var i=0;i<cs.length;i++){if(!cs[i].closest('.lc-xo')&&/^(BUTTON|A|INPUT|SPAN|I)$/.test(cs[i].tagName)){nat=cs[i];break;}}
+if(!nat)for(var j=0;j<cs.length;j++){if(!cs[j].closest('.lc-xo')){nat=cs[j];break;}}
+if(nat){var f=nat.tagName==='FORM'?nat:null;if(f){if(f.requestSubmit)f.requestSubmit();else f.submit();}else nat.click();}
+else{var inp=r.querySelector('input[name="amount"]');if(inp){inp.value=0;inp.dispatchEvent(new Event('input',{bubbles:true}));inp.dispatchEvent(new Event('change',{bubbles:true}));}}
+setTimeout(sch,300);
 });
 var tm;function sch(){clearTimeout(tm);tm=setTimeout(lc,60);}
 lc();document.addEventListener('DOMContentLoaded',lc);
